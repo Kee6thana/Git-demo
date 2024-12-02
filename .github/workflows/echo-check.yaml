@@ -1,20 +1,73 @@
-name: echo-check-pipeline
+name: CI/CD pipeline
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  builds:
+  build:
     runs-on: ubuntu-latest
     outputs: 
       timestamp: ${{ steps.date.outputs.datetime }}
     steps:
-      - uses: action/checkout@v4
+      - uses: actions/checkout@v4
       - name: build the application
         run: echo "building the application"
       - name: Set the current date
         id: date
-        run: echo " ::set-output name=datetime::$('date + %y-%m-%dT%H:%M:%SZ')"
+        run: echo " ::set-output name=datetime::$(date + '%y-%m-%dT%H:%M:%SZ')"
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: running test
+        run: echo " running test"
+
+  Docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      - name: build and push docker image
+        run: 
+          echo " building docker image"
+          echo " pushing to registry"
+
+  Deploy_dev:
+    needs: Docker
+    runs-on: ubuntu-latest
+    environment: 
+      name: dev
+      url: http://dev.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to dev environment
+        run: echo "deploying to dev"
+
+  Deploy_stg:
+    needs: Deploy_dev
+    runs-on: ubuntu-latest
+    environment: 
+      name: stg
+      url: http://stg.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to stg environment
+        run: echo "deploying to stg"
+
+
+  Deploy_prod:
+    needs: Deploy_stg
+    runs-on: ubuntu-latest
+    environment: 
+      name: prod
+      url: http://prod.example.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to prod environment
+        run: echo "deploying to prod"
+
 
 
