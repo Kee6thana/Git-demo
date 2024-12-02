@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v4
-        name: build and push docker image
+      - name: build and push docker image
         run: 
           echo " building docker image"
           echo " pushing to registry"
