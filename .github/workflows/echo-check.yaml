@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  builds:
+  build:
     runs-on: ubuntu-latest
     outputs: 
       timestamp: ${{ steps.date.outputs.datetime }}
