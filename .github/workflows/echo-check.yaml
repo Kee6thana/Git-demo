@@ -1,0 +1,20 @@
+name: echo-check-pipeline
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+    outputs: 
+      timestamp: ${{ steps.date.outputs.datetime }}
+    steps:
+      - uses: action/checkout@v4
+      - name: build the application
+        run: echo "building the application"
+      - name: Set the current date
+        id: date
+        run: echo " ::set-output name=datetime::$('date + %y-%m-%dT%H:%M:%SZ')"
+
+
